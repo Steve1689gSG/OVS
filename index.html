@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>OVT.S | DETECTOR - Главная Страница</title>
+        <link rel="stylesheet" href="/css/home-page/styles.css" />
+</head> 
+<body>
+ <div class="container">
+        <div class="logo-container" id="logoContainer">
+            <img src="" alt="Логотип бота" class="logo" id="botLogo">
+            <div class="bot-info">
+                <h3><span class="status-indicator status-loading" id="statusIndicator"></span>Статус бота</h3>
+                <div class="bot-stats" id="botStats">
+                    <div class="stat-item">
+                        <div class="stat-label">Имя бота:</div>
+                        <div class="stat-value" id="botUsername">Загрузка...</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Серверов:</div>
+                        <div class="stat-value" id="botServers">Загрузка...</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Пинг:</div>
+                        <div class="stat-value" id="botPing">Загрузка...</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Время Р:</div>
+                        <div class="stat-value" id="botUptime">Загрузка...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="auth-section" id="authSection">
+            <h2>ВХОД В СИСТЕМУ</h2>
+            <input type="password" class="password-input" placeholder="PASSWORD" id="passwordInput">
+            <br>
+            <button class="login-btn" onclick="checkPassword()">ВОЙТИ в ДЫру</button>
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+        
+        <div class="buttons-section" id="buttonsSection">
+            <a href="bot-details" class="nav-btn">Подробности о боте</a>
+            <a href="servers" class="nav-btn">Серверы для Майна</a>
+        </div>
+        
+        <div class="social-links" id="socialLinks">
+            <a href="https://t.me/OvtsDetector" class="social-btn">Telegram</a>
+        </div>
+    </div>
+
+        <script src="/js/home-page/script.js"></script>
+    </body>
+</html>
