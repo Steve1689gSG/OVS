@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVT.S | DETECTOR - Мониторинг серверов</title>
+    <link rel="stylesheet" href="../../css/server/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="top-row">
+            <div class="left-section">
+                <img src="" alt="Логотип" class="logo" id="botLogo">
+                <h1 class="page-title">Мониторинг серверов</h1>
+            </div>
+            <a href=".." class="back-btn">Назад на главную</a>
+        </div>
+         <div class="sort-controls">
+    <button class="sort-btn" id="sortBtn">Сортировка: не выбрана</button>
+</div>
+        <div class="loading" id="loading">Загрузка серверов...</div>
+        
+        <div class="servers-grid" id="serversGrid"></div>
+        
+        <div class="pagination" id="pagination"></div>
+    </div>
+    
+    <div class="server-details-modal" id="serverModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script src="../../js/server/script.js"></script>
+</body>
+</html>

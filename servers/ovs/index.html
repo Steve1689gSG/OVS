@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Серверы - Редактор</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a2e;
+            color: #e6e6e6;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            color: #4cc9f0;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: #a9b7c6;
+            font-size: 1.1rem;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background-color: #3a56d4;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        button.delete {
+            background-color: #f72585;
+        }
+        
+        button.delete:hover {
+            background-color: #e11575;
+        }
+        
+        button.export {
+            background-color: #4cc9f0;
+        }
+        
+        button.export:hover {
+            background-color: #3ab9e0;
+        }
+        
+        .server-form {
+            background-color: #16213e;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-title {
+            color: #4cc9f0;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #0f3460;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a9b7c6;
+            font-weight: 500;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #0f3460;
+            background-color: #1a1a2e;
+            color: #e6e6e6;
+            font-size: 1rem;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #4cc9f0;
+            box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.2);
+        }
+        
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .tag {
+            background-color: #3a56d4;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .tag-remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .servers-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .server-card {
+            background-color: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .server-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .server-name {
+            color: #4cc9f0;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #0f3460;
+            padding-bottom: 8px;
+        }
+        
+        .server-ip {
+            color: #a9b7c6;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        
+        .server-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .stars {
+            color: #ffd700;
+            margin-right: 10px;
+        }
+        
+        .server-description {
+            margin-bottom: 15px;
+            color: #e6e6e6;
+        }
+        
+        .server-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .server-tag {
+            background-color: #0f3460;
+            color: #a9b7c6;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .json-output {
+            background-color: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .json-title {
+            color: #4cc9f0;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        pre {
+            background-color: #1a1a2e;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            color: #a9b7c6;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: inline-block;
+            background-color: #4cc9f0;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-label:hover {
+            background-color: #3ab9e0;
+        }
+        
+        @media (max-width: 768px) {
+            .servers-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Minecraft Серверы - Редактор</h1>
+            <p class="subtitle">Добавляйте, редактируйте и экспортируйте данные о серверах в формате JSON</p>
+        </header>
+        
+        <div class="actions">
+            <button id="addServerBtn">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M14 7H9V2H7v5H2v2h5v5h2V9h5z"/>
+                </svg>
+                Добавить сервер
+            </button>
+            <button id="resetBtn" class="delete">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                </svg>
+                Сбросить всё
+            </button>
+            <button id="exportBtn" class="export">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                </svg>
+                Экспорт JSON
+            </button>
+            <label for="fileInput" class="file-label">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                </svg>
+                Загрузить JSON
+            </label>
+            <input type="file" id="fileInput" class="file-input" accept=".json">
+        </div>
+        
+        <div class="server-form" id="serverForm">
+            <h2 class="form-title" id="formTitle">Добавить новый сервер</h2>
+            <div class="form-group">
+                <label for="serverName">Название сервера</label>
+                <input type="text" id="serverName" placeholder="Введите название сервера">
+            </div>
+            <div class="form-group">
+                <label for="serverIP">IP адрес сервера</label>
+                <input type="text" id="serverIP" placeholder="Введите IP адрес сервера">
+            </div>
+            <div class="form-group">
+                <label for="serverRating">Рейтинг (0.0 - 5.0)</label>
+                <input type="number" id="serverRating" min="0" max="5" step="0.1" placeholder="4.5">
+            </div>
+            <div class="form-group">
+                <label for="serverDescription">Описание сервера</label>
+                <textarea id="serverDescription" rows="3" placeholder="Введите описание сервера"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="tagInput">Теги сервера</label>
+                <input type="text" id="tagInput" placeholder="Введите тег и нажмите Enter">
+                <div class="tags-input" id="tagsContainer"></div>
+            </div>
+            <div class="actions">
+                <button id="saveServerBtn">Сохранить сервер</button>
+                <button id="cancelEditBtn" class="delete hidden">Отменить редактирование</button>
+            </div>
+        </div>
+        
+        <div class="servers-list" id="serversList"></div>
+        
+        <div class="json-output" id="jsonOutput">
+            <h2 class="json-title">JSON данные</h2>
+            <pre id="jsonData"></pre>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация данных
+        let servers = [];
+        let currentEditIndex = -1;
+        let tags = [];
+
+        // Элементы DOM
+        const serverForm = document.getElementById('serverForm');
+        const formTitle = document.getElementById('formTitle');
+        const serverName = document.getElementById('serverName');
+        const serverIP = document.getElementById('serverIP');
+        const serverRating = document.getElementById('serverRating');
+        const serverDescription = document.getElementById('serverDescription');
+        const tagInput = document.getElementById('tagInput');
+        const tagsContainer = document.getElementById('tagsContainer');
+        const saveServerBtn = document.getElementById('saveServerBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const addServerBtn = document.getElementById('addServerBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const fileInput = document.getElementById('fileInput');
+        const serversList = document.getElementById('serversList');
+        const jsonData = document.getElementById('jsonData');
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSampleData();
+            renderServers();
+            updateJSON();
+            
+            // Обработчики событий
+            saveServerBtn.addEventListener('click', saveServer);
+            cancelEditBtn.addEventListener('click', cancelEdit);
+            addServerBtn.addEventListener('click', showAddForm);
+            resetBtn.addEventListener('click', resetAll);
+            exportBtn.addEventListener('click', exportJSON);
+            fileInput.addEventListener('change', handleFileUpload);
+            
+            // Добавление тегов по нажатию Enter
+            tagInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addTag();
+                }
+            });
+        });
+
+        // Загрузка примеров данных
+        function loadSampleData() {
+            servers = [
+                {
+                    name: "Hypixel",
+                    ip: "mc.hypixel.net",
+                    rating: 4.9,
+                    description: "Самый популярный Minecraft сервер с мини-играми",
+                    tags: ["Мини-игры", "PvP", "Беды"]
+                },
+                {
+                    name: "Lost Echoes",
+                    ip: "89.35.130.15:25012", 
+                    rating: 0.0,
+                    description: "Мистик сервер",
+                    tags: ["Мистика"]
+                },
+                {
+                    name: "The Hive",
+                    ip: "play.hivemc.com",
+                    rating: 4.6,
+                    description: "Сервер с популярными играми как Hide and Seek",
+                    tags: ["Мини-игры", "Hide and Seek", "PvP"]
+                },
+                {
+                    name: "Cubecraft",
+                    ip: "play.cubecraft.net",
+                    rating: 4.5,
+                    description: "Сервер с качественными мини-играми",
+                    tags: ["Мини-игры", "Беды", "PvP"]
+                }
+            ];
+        }
+
+        // Отображение списка серверов
+        function renderServers() {
+            serversList.innerHTML = '';
+            
+            if (servers.length === 0) {
+                serversList.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; color: #a9b7c6;">Нет добавленных серверов</p>';
+                return;
+            }
+            
+            servers.forEach((server, index) => {
+                const serverCard = document.createElement('div');
+                serverCard.className = 'server-card';
+                
+                const stars = '⭐'.repeat(Math.floor(server.rating)) + (server.rating % 1 >= 0.5 ? '½' : '');
+                
+                serverCard.innerHTML = `
+                    <h3 class="server-name">${server.name}</h3>
+                    <p class="server-ip">IP: ${server.ip}</p>
+                    <div class="server-rating">
+                        <span class="stars">${stars}</span>
+                        <span>${server.rating}/5.0</span>
+                    </div>
+                    <p class="server-description">${server.description}</p>
+                    <div class="server-tags">
+                        ${server.tags.map(tag => `<span class="server-tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="card-actions">
+                        <button class="edit-btn" data-index="${index}">Редактировать</button>
+                        <button class="delete" data-index="${index}">Удалить</button>
+                    </div>
+                `;
+                
+                serversList.appendChild(serverCard);
+            });
+            
+            // Добавляем обработчики для кнопок редактирования и удаления
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    editServer(index);
+                });
+            });
+            
+            document.querySelectorAll('.card-actions .delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    deleteServer(index);
+                });
+            });
+        }
+
+        // Показать форму добавления
+        function showAddForm() {
+            currentEditIndex = -1;
+            formTitle.textContent = 'Добавить новый сервер';
+            clearForm();
+            cancelEditBtn.classList.add('hidden');
+            serverForm.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Очистка формы
+        function clearForm() {
+            serverName.value = '';
+            serverIP.value = '';
+            serverRating.value = '';
+            serverDescription.value = '';
+            tags = [];
+            renderTags();
+        }
+
+        // Добавление тега
+        function addTag() {
+            const tag = tagInput.value.trim();
+            if (tag && !tags.includes(tag)) {
+                tags.push(tag);
+                renderTags();
+            }
+            tagInput.value = '';
+        }
+
+        // Удаление тега
+        function removeTag(index) {
+            tags.splice(index, 1);
+            renderTags();
+        }
+
+        // Отображение тегов
+        function renderTags() {
+            tagsContainer.innerHTML = '';
+            tags.forEach((tag, index) => {
+                const tagElement = document.createElement('div');
+                tagElement.className = 'tag';
+                tagElement.innerHTML = `
+                    ${tag}
+                    <span class="tag-remove" data-index="${index}">×</span>
+                `;
+                tagsContainer.appendChild(tagElement);
+            });
+            
+            // Добавляем обработчики для удаления тегов
+            document.querySelectorAll('.tag-remove').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    removeTag(index);
+                });
+            });
+        }
+
+        // Сохранение сервера
+        function saveServer() {
+            const name = serverName.value.trim();
+            const ip = serverIP.value.trim();
+            const rating = parseFloat(serverRating.value) || 0;
+            const description = serverDescription.value.trim();
+            
+            if (!name || !ip) {
+                alert('Пожалуйста, заполните обязательные поля: название и IP сервера');
+                return;
+            }
+            
+            const serverData = {
+                name,
+                ip,
+                rating: Math.min(5, Math.max(0, rating)), // Ограничение рейтинга от 0 до 5
+                description,
+                tags: [...tags]
+            };
+            
+            if (currentEditIndex === -1) {
+                // Добавление нового сервера
+                servers.push(serverData);
+            } else {
+                // Редактирование существующего сервера
+                servers[currentEditIndex] = serverData;
+                currentEditIndex = -1;
+                cancelEditBtn.classList.add('hidden');
+                formTitle.textContent = 'Добавить новый сервер';
+            }
+            
+            clearForm();
+            renderServers();
+            updateJSON();
+            
+            // Прокрутка к списку серверов
+            serversList.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Редактирование сервера
+        function editServer(index) {
+            const server = servers[index];
+            currentEditIndex = index;
+            
+            serverName.value = server.name;
+            serverIP.value = server.ip;
+            serverRating.value = server.rating;
+            serverDescription.value = server.description;
+            tags = [...server.tags];
+            
+            renderTags();
+            formTitle.textContent = 'Редактировать сервер';
+            cancelEditBtn.classList.remove('hidden');
+            serverForm.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Отмена редактирования
+        function cancelEdit() {
+            currentEditIndex = -1;
+            clearForm();
+            cancelEditBtn.classList.add('hidden');
+            formTitle.textContent = 'Добавить новый сервер';
+        }
+
+        // Удаление сервера
+        function deleteServer(index) {
+            if (confirm('Вы уверены, что хотите удалить этот сервер?')) {
+                servers.splice(index, 1);
+                renderServers();
+                updateJSON();
+            }
+        }
+
+        // Сброс всех данных
+        function resetAll() {
+            if (confirm('Вы уверены, что хотите удалить все серверы и начать с нуля?')) {
+                servers = [];
+                renderServers();
+                updateJSON();
+                clearForm();
+            }
+        }
+
+        // Обновление JSON данных
+        function updateJSON() {
+            const jsonOutput = {
+                servers: servers
+            };
+            jsonData.textContent = JSON.stringify(jsonOutput, null, 2);
+        }
+
+        // Экспорт JSON
+        function exportJSON() {
+            const dataStr = JSON.stringify({ servers: servers }, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'servers.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            alert('засунь файл servers.json в папку ..\web-OVS\data блять ');
+        }
+
+        // Загрузка JSON файла
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.servers && Array.isArray(data.servers)) {
+                        servers = data.servers;
+                        renderServers();
+                        updateJSON();
+                        alert('Данные успешно загружены!');
+                    } else {
+                        alert('Неверный формат файла. Ожидается объект с массивом "servers".');
+                    }
+                } catch (error) {
+                    alert('Ошибка при чтении файла: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+            
+            // Сброс значения input, чтобы можно было загрузить тот же файл снова
+            event.target.value = '';
+        }
+    </script>
+</body>
+</html>
